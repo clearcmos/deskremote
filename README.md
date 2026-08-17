@@ -45,7 +45,7 @@ off) directly.
 - Linux with systemd and a logged-in graphical session (the unit runs in user scope so it inherits that session's PipeWire and D-Bus). Developed on Arch + KDE Plasma; the server code is not Arch-specific, but two endpoints depend on helpers that are (see below).
 - Python 3.11+ with `venv`
 - PipeWire/WirePlumber for audio control
-- BlueZ for Bluetooth control, plus the `bt-toggle` helper on PATH (deployed from `~/arch`)
+- For `/bluetooth`: BlueZ, plus a `bt-toggle` helper of your own on PATH (not shipped here)
 - Port 8201 open on the LAN
 - For auth (recommended): any way to set `DESKREMOTE_TOKEN` (pass it to `install.sh`, see below). The author's setup provisions it from 1Password, which is optional.
 
@@ -59,40 +59,71 @@ off) directly.
 
 ### 1. Install the Server
 
-```bash
-# Creates a venv, installs deps, deploys and enables the systemd user service
-./server/install.sh
+Generate a shared secret and hand it to the installer. Keep the printed value:
+you enter the same one in the app in step 4.
 
+```bash
+git clone https://github.com/clearcmos/deskremote && cd deskremote
+```
+```bash
+DESKREMOTE_TOKEN="$(openssl rand -hex 32)" ./server/install.sh
+```
+```bash
+grep DESKREMOTE_TOKEN ~/.config/deskremote/env
+```
+
+That creates a venv, installs hash-verified dependencies, writes the token to
+`~/.config/deskremote/env` (0600), and enables the systemd user service. Re-run
+it any time to redeploy; it keeps the existing token unless you pass a new one.
+Omit `DESKREMOTE_TOKEN` entirely and the server runs open, with a warning.
+
+```bash
 # Check status and logs
 systemctl --user status deskremote
 journalctl --user -u deskremote -f
 
-# Test (only works before auth is enabled; once a token is set these return 401)
-curl http://127.0.0.1:8201/health
+# 401 is the healthy answer once a token is set: the request was unsigned
+curl -o /dev/null -w '%{http_code}\n' http://127.0.0.1:8201/health
 ```
 
-Open port 8201 on the LAN (one-time). The rule lives in `~/arch/config/nftables/nftables.conf`; apply it with:
+### 2. Open the Port to Your LAN Only
+
+The server listens on `0.0.0.0:8201`. Restrict it with whatever firewall you
+run. With firewalld, for a LAN of `192.168.1.0/24`:
 
 ```bash
-sudo install -m644 ~/arch/config/nftables/nftables.conf /etc/nftables.conf && sudo systemctl restart nftables
+sudo firewall-cmd --permanent --add-rich-rule='rule family=ipv4 source address=192.168.1.0/24 port port=8201 protocol=tcp accept' && sudo firewall-cmd --reload
 ```
 
-### 2. Set Up Authentication (recommended)
+The author uses nftables, with the rule kept in a config repo and applied with
+`sudo install -m644 ~/arch/config/nftables/nftables.conf /etc/nftables.conf && sudo systemctl restart nftables`.
+That path is one person's mechanism, not a requirement.
 
-Create the shared secret in 1Password (`api` vault) with a personal login that can write to it (the `SVC_API` service account is read-only), then read it back to enter in the app:
+<details>
+<summary>Optional: provisioning the token from 1Password instead</summary>
+
+`install.sh` falls back to `op inject` when `DESKREMOTE_TOKEN` is unset and both
+the `op` CLI and a service-account token at `~/.config/op/SVC_API.token` exist.
+Create the item once with a login that can write to the vault (a read-only
+service account cannot):
 
 ```bash
 op item create --category=password --title=DESKREMOTE --vault=api --generate-password='letters,digits,32'
+```
+```bash
 op read op://api/DESKREMOTE/password
 ```
 
-Then re-run `./server/install.sh` (it injects the token into `~/.config/deskremote/env` via the `SVC_API` service account and restarts the service). Enter the same value in the app's settings in step 4. If you skip this, the server runs without auth.
+Then re-run `./server/install.sh`. Nothing else in the project depends on
+1Password.
+</details>
 
 ### 3. Install the App
 
-Either install a published APK from [Releases](https://github.com/clearcmos/deskremote/releases)
-(Android will ask you to allow installs from an unknown source), or build it
-yourself:
+No APK is published yet, so build it yourself. Once releases exist they will
+appear under [Releases](https://github.com/clearcmos/deskremote/releases) and
+can be installed directly (Android will ask you to allow installs from an
+unknown source).
 
 ```bash
 cd android
@@ -105,7 +136,7 @@ cd android
 ### 4. Configure the App
 
 1. Open the app
-2. Tap the gear icon and paste the auth token (from step 2); optionally set the server IP/port
+2. Tap the gear icon, set the server's IP and port, and paste the auth token from step 1
 3. Make sure the phone is on the same network as the server
 4. The app should show "Connected" status
 
@@ -135,7 +166,7 @@ Settings are editable in-app (tap the gear icon). Defaults live in `SettingsMana
 | `/status` | GET | Current mute/volume/bluetooth state |
 | `/mute` | POST | Toggle audio mute |
 | `/volume` | POST | Set volume level (body: `{"level": 0-100}`) |
-| `/bluetooth` | POST | Toggle Bluetooth + connect Q30 |
+| `/bluetooth` | POST | Runs your `bt-toggle` helper (toggle Bluetooth, connect a device) |
 | `/screen-off` | POST | Turn off screen + enable DND (Meta+F10 equivalent) |
 
 ## Project Structure
