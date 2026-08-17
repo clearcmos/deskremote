@@ -29,6 +29,16 @@ UNIT_DST="$UNIT_DIR/deskremote.service"
 echo "==> Server dir: $SERVER_DIR"
 
 # 1. Python venv + dependencies
+#
+# Tests pip rather than just the directory: a venv's scripts carry an absolute
+# shebang, so moving or renaming the checkout leaves .venv present but broken
+# ("bad interpreter"). The interpreter symlink still resolves, which is why
+# checking python3 alone is not enough. Same recovery covers a system Python
+# upgrade that removed the base interpreter.
+if [[ -d "$VENV" ]] && ! "$VENV/bin/pip" --version >/dev/null 2>&1; then
+    echo "==> Existing venv at $VENV is unusable (moved checkout?); recreating"
+    rm -rf "$VENV"
+fi
 if [[ ! -d "$VENV" ]]; then
     echo "==> Creating venv at $VENV"
     python3 -m venv "$VENV"

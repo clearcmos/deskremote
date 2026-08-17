@@ -360,6 +360,13 @@ Dated, with the reason. Add to this rather than rewriting it.
   `env -i PATH=/nonexistent .venv/bin/python -m pytest` reproduces a bare runner
   locally if you need to check that again.
 
+- **2026-08-16 - install.sh recreates a venv it cannot use.** It only checked
+  that `.venv/` existed. A venv bakes an absolute shebang into every script, so
+  renaming the checkout (cmos-remote to deskremote) left pip dead with "bad
+  interpreter" while `.venv/bin/python3`, a symlink to the system interpreter,
+  still resolved. That is why the check runs `pip --version` rather than testing
+  the interpreter. Reproduced in a sandbox before and after the fix.
+
 ### Known upgrade chains (blocked, not forgotten)
 
 Dependabot's first run found two bumps that need a toolchain move, which CI

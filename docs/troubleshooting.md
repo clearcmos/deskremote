@@ -77,6 +77,19 @@ command -v wpctl bluetoothctl systemctl   # expect /usr/bin/...
 command -v bt-toggle                      # expect ~/.local/bin/bt-toggle
 ```
 
+### "bad interpreter" after moving or renaming the checkout
+
+A venv stores an absolute path in each script's shebang, so `server/.venv` stops
+working when the repo directory moves. `.venv/bin/python3` keeps resolving (it
+is a symlink to the system interpreter), which makes the failure look stranger
+than it is: only the scripts break.
+
+Re-running the installer fixes it; it detects the unusable venv and rebuilds:
+```bash
+./server/install.sh
+```
+To force it by hand: `rm -rf server/.venv && ./server/install.sh`
+
 ### Permission Denied
 
 The service runs as a systemd **user** service in your own session, so it already has your PipeWire and D-Bus access. Verify it is the user unit:
