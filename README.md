@@ -120,10 +120,13 @@ Then re-run `./server/install.sh`. Nothing else in the project depends on
 
 ### 3. Install the App
 
-No APK is published yet, so build it yourself. Once releases exist they will
-appear under [Releases](https://github.com/clearcmos/deskremote/releases) and
-can be installed directly (Android will ask you to allow installs from an
-unknown source).
+Download the APK from
+[Releases](https://github.com/clearcmos/deskremote/releases/latest) and open it
+on the phone. Android will ask you to allow installs from an unknown source.
+Each release ships a `.sha256` next to the APK; verify it with
+`sha256sum -c deskremote-v1.0.0.apk.sha256`.
+
+Or build it yourself:
 
 ```bash
 cd android
