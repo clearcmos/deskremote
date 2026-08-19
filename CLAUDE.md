@@ -142,6 +142,20 @@ material comes from four repository secrets, and locally from a gitignored
 ("Release Build"). Without a keystore, `assembleRelease` still builds but the
 output is `app-release-unsigned.apk`, which the release workflow rejects.
 
+**The signing key is permanent.** `v1.0.0` (2026-08-16) was the first published
+release, so the key that signed it is the only key Android will ever accept as
+an upgrade for `com.clearcmos.deskremote`. It lives at
+`~/.local/share/deskremote/release.jks` (0600), is backed up in 1Password as the
+document `DESKREMOTE_KEYSTORE` with its password in `DESKREMOTE_KEYSTORE_PASSWORD`,
+and is loaded into CI from `ANDROID_KEYSTORE_BASE64`. GitHub secrets cannot be
+read back, so those two 1Password entries are the only recoverable copies. Lose
+them and existing users must uninstall before they can install any future
+version.
+
+This key is unrelated to `DESKREMOTE_TOKEN`: the token authenticates the app to
+the server at runtime and can be rotated freely; the key identifies the
+publisher at build time and cannot.
+
 ## Wireless ADB Setup
 
 Samsung S25 IP Address: `192.168.1.13` (typical)
@@ -261,7 +275,7 @@ Widget updates automatically when:
 
 ### Tests
 
-142 tests: 104 on the server (pytest, 100% line coverage, gate at 85), 38 in the
+154 tests: 113 on the server (pytest, 100% line coverage, gate at 85), 41 in the
 app (JVM unit tests, no device or emulator needed).
 
 | Suite | Covers |

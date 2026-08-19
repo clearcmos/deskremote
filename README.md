@@ -342,7 +342,7 @@ coverage run -m pytest && coverage report   # gate: 85%
 ./gradlew testDebugUnitTest lintDebug assembleDebug
 ```
 
-142 tests: 104 on the server (100% line coverage) and 38 in the app, all
+154 tests: 113 on the server (100% line coverage) and 41 in the app, all
 runnable without a device. The HMAC scheme and the JSON payloads are each
 implemented twice, once in Python and once in Kotlin, so `spec/hmac-vectors.json`
 and `spec/wire-payloads.json` hold the canonical formats and both test suites
