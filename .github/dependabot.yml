@@ -25,6 +25,15 @@ updates:
       other-gradle:
         patterns: ["*"]
         exclude-patterns: ["org.jetbrains.kotlin*", "androidx.*"]
+    # These cannot build until the AGP 9 migration happens (that plugin removes
+    # org.jetbrains.kotlin.android entirely), so without these ignores dependabot
+    # reopens a red PR every month. Drop them as part of that migration; the
+    # blockers are recorded in CLAUDE.md under "Known upgrade chains".
+    ignore:
+      - dependency-name: "androidx.core:core-ktx"
+        versions: [">=1.19.0"] # requires compiling against API 37
+      - dependency-name: "androidx.lifecycle:*"
+        versions: [">=2.11.0"] # requires AGP 9.1 or higher
 
   - package-ecosystem: pip
     directory: /server
