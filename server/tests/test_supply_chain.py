@@ -70,3 +70,48 @@ def test_lock_pins_exact_versions():
         if line.startswith("#") or line.startswith(" ") or not line.strip():
             continue
         assert "==" in line, f"unpinned entry in lock: {line}"
+
+
+def parse_floor(line: str) -> tuple[str, str] | None:
+    """("fastapi>=0.141.1") -> ("fastapi", "0.141.1"); None when unpinned."""
+    match = re.match(r"([A-Za-z0-9._-]+)(?:\[[^\]]+\])?>=([0-9][0-9.]*)", line)
+    return (normalize(match.group(1)), match.group(2)) if match else None
+
+
+def locked_versions() -> dict[str, str]:
+    versions = {}
+    for line in LOCK.read_text().splitlines():
+        match = re.match(r"^([A-Za-z0-9._-]+)==([0-9][^ ;\\]*)", line)
+        if match:
+            versions[normalize(match.group(1))] = match.group(2).strip()
+    return versions
+
+
+def version_key(version: str) -> tuple[int, ...]:
+    return tuple(int(part) for part in re.findall(r"\d+", version))
+
+
+def test_lock_satisfies_every_declared_floor():
+    """The lock is what actually gets installed, so it has to be at least the
+    version requirements.txt asks for.
+
+    Dependabot bumps requirements.txt but knows nothing about requirements.lock,
+    so a bump that is not followed by `uv pip compile` would otherwise leave the
+    host installing older packages than the project claims to require, silently.
+    """
+    locked = locked_versions()
+    stale = []
+    for line in REQUIREMENTS.read_text().splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        floor = parse_floor(line)
+        if floor is None:
+            continue
+        name, minimum = floor
+        got = locked.get(name)
+        if got is None or version_key(got) < version_key(minimum):
+            stale.append(f"{name}: requirements.txt wants >={minimum}, lock has {got}")
+    assert not stale, "requirements.lock is behind requirements.txt; re-run uv pip compile:\n" + "\n".join(
+        stale
+    )

@@ -17,10 +17,10 @@
           };
         };
 
-        buildToolsVersion = "35.0.0";
+        buildToolsVersion = "36.0.0";
 
         androidComposition = pkgs.androidenv.composeAndroidPackages {
-          platformVersions = [ "35" ];
+          platformVersions = [ "36" ];
           buildToolsVersions = [ buildToolsVersion ];
           includeEmulator = false;
           includeNDK = false;
