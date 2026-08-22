@@ -394,10 +394,12 @@ What is still deliberately held back, with the exact blocker:
   ("no longer required for Kotlin support since AGP 9.0") and needs Gradle
   9.5+. That is a build-script migration, not a version bump, so it wants its
   own focused pass.
-- **androidx.core 1.19+** requires compiling against API 37, and
-  **lifecycle 2.11+** requires AGP 9.1 or higher. Both are gated behind the AGP
-  9 migration above. Pinned at core-ktx 1.18.0 and lifecycle 2.10.0, which are
-  the newest that build on AGP 8.x.
+- **The whole androidx and Compose front is now at the AGP 8.x ceiling.**
+  core-ktx 1.19+ and OkHttp 5.5+ want API 37; lifecycle 2.11+ and Compose 1.12
+  (compose-bom 2026.07.00 and later) want AGP 9.1+. Held at core-ktx 1.18.0,
+  lifecycle 2.10.0, compose-bom 2026.06.01, OkHttp 5.4.0. `.github/dependabot.yml`
+  carries a matching `ignore` block so these do not reopen as failing PRs every
+  month; deleting that block is the first step of the AGP 9 migration.
 - **nixpkgs pins the SDK platform.** The dev shell only had `android-36.1`
   until `nix flake update nixpkgs` (2025-12-15 to 2026-08-22) brought in plain
   `android-36`, which is what AGP resolves for `compileSdk = 36`. A future
