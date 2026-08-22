@@ -47,6 +47,8 @@ updates:
         versions: [">=2026.07.00"] # pulls Compose 1.12, which requires AGP 9.1
       - dependency-name: "com.squareup.okhttp3:*"
         versions: [">=5.5.0"] # requires compiling against API 37
+      - dependency-name: "gradle"
+        versions: [">=9.0.0"] # Gradle 9 comes with the AGP 9 migration, not before
 
   - package-ecosystem: pip
     directory: /server
