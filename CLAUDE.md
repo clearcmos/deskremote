@@ -275,7 +275,7 @@ Widget updates automatically when:
 
 ### Tests
 
-154 tests: 113 on the server (pytest, 100% line coverage, gate at 85), 41 in the
+155 tests: 114 on the server (pytest, 100% line coverage, gate at 85), 41 in the
 app (JVM unit tests, no device or emulator needed).
 
 | Suite | Covers |
@@ -284,7 +284,7 @@ app (JVM unit tests, no device or emulator needed).
 | `server/tests/test_controls.py` | output parsers against captured real output, every degraded path, the `run()` boundary |
 | `server/tests/test_main.py` | endpoints through a TestClient, auth dependency, response signing, 500 mapping |
 | `server/tests/test_wire_payloads.py` | response models against `spec/wire-payloads.json` |
-| `server/tests/test_supply_chain.py` | every direct requirement is in the hash-locked lock file |
+| `server/tests/test_supply_chain.py` | every direct requirement is in the hash-locked lock file, fully hashed, and at least the version requirements.txt asks for |
 | `HmacInterceptorTest.kt` | the same HMAC vectors, plus response verification and impostor rejection |
 | `ApiClientTest.kt` | requests, decoding, failure reporting, auth wiring, against MockWebServer |
 | `ModelsTest.kt` | the same wire payloads decoded into the app's data classes |
@@ -394,10 +394,12 @@ What is still deliberately held back, with the exact blocker:
   ("no longer required for Kotlin support since AGP 9.0") and needs Gradle
   9.5+. That is a build-script migration, not a version bump, so it wants its
   own focused pass.
-- **androidx.core 1.19+** requires compiling against API 37, and
-  **lifecycle 2.11+** requires AGP 9.1 or higher. Both are gated behind the AGP
-  9 migration above. Pinned at core-ktx 1.18.0 and lifecycle 2.10.0, which are
-  the newest that build on AGP 8.x.
+- **The whole androidx and Compose front is now at the AGP 8.x ceiling.**
+  core-ktx 1.19+ and OkHttp 5.5+ want API 37; lifecycle 2.11+ and Compose 1.12
+  (compose-bom 2026.07.00 and later) want AGP 9.1+. Held at core-ktx 1.18.0,
+  lifecycle 2.10.0, compose-bom 2026.06.01, OkHttp 5.4.0. `.github/dependabot.yml`
+  carries a matching `ignore` block so these do not reopen as failing PRs every
+  month; deleting that block is the first step of the AGP 9 migration.
 - **nixpkgs pins the SDK platform.** The dev shell only had `android-36.1`
   until `nix flake update nixpkgs` (2025-12-15 to 2026-08-22) brought in plain
   `android-36`, which is what AGP resolves for `compileSdk = 36`. A future

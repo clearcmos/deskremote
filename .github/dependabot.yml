@@ -29,11 +29,24 @@ updates:
     # org.jetbrains.kotlin.android entirely), so without these ignores dependabot
     # reopens a red PR every month. Drop them as part of that migration; the
     # blockers are recorded in CLAUDE.md under "Known upgrade chains".
+    #
+    # These mark the AGP 8.x ceiling. The current androidx and Compose releases
+    # all require AGP 9.1+, and AGP 9 is a build-script migration rather than a
+    # version bump: it removes org.jetbrains.kotlin.android entirely and needs
+    # Gradle 9.5+. Without these, dependabot reopens the same red PRs monthly.
+    # Delete this whole block as the first step of that migration; the blockers
+    # are recorded in CLAUDE.md under "Known upgrade chains".
     ignore:
+      - dependency-name: "com.android.application"
+        versions: [">=9.0.0"] # the migration itself
       - dependency-name: "androidx.core:core-ktx"
         versions: [">=1.19.0"] # requires compiling against API 37
       - dependency-name: "androidx.lifecycle:*"
         versions: [">=2.11.0"] # requires AGP 9.1 or higher
+      - dependency-name: "androidx.compose:compose-bom"
+        versions: [">=2026.07.00"] # pulls Compose 1.12, which requires AGP 9.1
+      - dependency-name: "com.squareup.okhttp3:*"
+        versions: [">=5.5.0"] # requires compiling against API 37
 
   - package-ecosystem: pip
     directory: /server

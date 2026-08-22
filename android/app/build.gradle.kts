@@ -94,7 +94,7 @@ kotlin {
 dependencies {
     // AndroidX Core
     implementation("androidx.core:core-ktx:1.18.0")
-    implementation("androidx.appcompat:appcompat:1.7.1")
+    implementation("androidx.appcompat:appcompat:1.8.0")
     implementation("androidx.activity:activity-ktx:1.13.0")
 
     // Jetpack Compose
