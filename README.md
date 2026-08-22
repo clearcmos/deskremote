@@ -52,7 +52,7 @@ off) directly.
 ### Android App
 - Android 8.0+ (API 26)
 - On the same network as the server (WiFi or Ethernet; cellular is treated as off-LAN)
-- To build from source: JDK 17 and the Android SDK (platform 35, build-tools
+- To build from source: JDK 17 and the Android SDK (platform 36, build-tools
   35.0.0). See `docs/android-dev.md`.
 
 ## Quick Start
@@ -131,7 +131,7 @@ Or build it yourself:
 ```bash
 cd android
 
-# Requires JDK 17 + Android SDK (platform 35, build-tools 35.0.0) and a device
+# Requires JDK 17 + Android SDK (platform 36, build-tools 36.0.0) and a device
 # connected via ADB. See docs/android-dev.md for the three ways to get the SDK.
 ./gradlew installDebug
 ```

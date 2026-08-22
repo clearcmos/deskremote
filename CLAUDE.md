@@ -27,7 +27,7 @@ The desktop host runs **Arch Linux**. The server runs as a systemd **user** serv
 - **UI Framework:** Jetpack Compose + Material 3
 - **Widget Framework:** Jetpack Glance 1.1.1
 - **HTTP Client:** OkHttp 4.12
-- **Target SDK:** 35 (Android 15)
+- **Target SDK:** 36 (Android 16)
 - **Min SDK:** 26 (Android 8.0)
 
 ## Ownership and Deployment Model
@@ -114,7 +114,7 @@ cd android
 ./gradlew testDebugUnitTest
 ./gradlew lintDebug
 
-# Build debug APK (needs JDK 17 + Android SDK platform 35 / build-tools 35.0.0
+# Build debug APK (needs JDK 17 + Android SDK platform 36 / build-tools 36.0.0
 # on PATH or via ANDROID_HOME; see docs/android-dev.md)
 ./gradlew assembleDebug
 
@@ -383,17 +383,25 @@ Dated, with the reason. Add to this rather than rewriting it.
 
 ### Known upgrade chains (blocked, not forgotten)
 
-Dependabot's first run found two bumps that need a toolchain move, which CI
-correctly refused:
+Resolved 2026-08-22: AGP 8.13.2 on Gradle 8.14.3, compileSdk and targetSdk 36,
+Kotlin 2.4.10, activity 1.13.0, compose BOM 2026.06.01, lifecycle 2.10.0,
+OkHttp 5.4.0. Grouping dependabot by ecosystem is what made the Kotlin bump
+possible at all: all five plugin versions have to move in one commit.
 
-- `androidx.activity:activity-compose` 1.13.0 requires Android Gradle Plugin
-  8.9.1 or newer (currently 8.7.3), and pulls `androidx.navigationevent`. Doing
-  it means moving AGP, and likely `compileSdk` past 35, together.
-- Kotlin 2.4.x requires bumping all four Kotlin plugin versions in
-  `android/build.gradle.kts` at once, and a Compose compiler that matches.
+What is still deliberately held back, with the exact blocker:
 
-Neither is urgent: the app targets SDK 35 and builds clean. Take them as one
-deliberate toolchain upgrade rather than as individual dependency PRs.
+- **AGP 9.x** removes the `org.jetbrains.kotlin.android` plugin entirely
+  ("no longer required for Kotlin support since AGP 9.0") and needs Gradle
+  9.5+. That is a build-script migration, not a version bump, so it wants its
+  own focused pass.
+- **androidx.core 1.19+** requires compiling against API 37, and
+  **lifecycle 2.11+** requires AGP 9.1 or higher. Both are gated behind the AGP
+  9 migration above. Pinned at core-ktx 1.18.0 and lifecycle 2.10.0, which are
+  the newest that build on AGP 8.x.
+- **nixpkgs pins the SDK platform.** The dev shell only had `android-36.1`
+  until `nix flake update nixpkgs` (2025-12-15 to 2026-08-22) brought in plain
+  `android-36`, which is what AGP resolves for `compileSdk = 36`. A future
+  compileSdk bump may need the same lock refresh before it can build locally.
 
 ## Additional Documentation
 

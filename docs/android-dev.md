@@ -3,13 +3,13 @@
 ## Overview
 
 The app builds with the committed Gradle wrapper. You need a JDK 17 and the
-Android SDK (platform 35, build-tools 35.0.0); where those come from is up to
+Android SDK (platform 36, build-tools 36.0.0); where those come from is up to
 you. Android Studio is not required.
 
 ## Prerequisites
 
 - JDK 17 (`jvmTarget` is 17; newer JDKs are not configured)
-- Android SDK: `platforms;android-35`, `build-tools;35.0.0`, `platform-tools`
+- Android SDK: `platforms;android-36`, `build-tools;36.0.0`, `platform-tools`
 - An Android device with Developer Options enabled (API 26+)
 - USB cable or WiFi for ADB
 
@@ -21,7 +21,7 @@ Download the Android command-line tools, then install the components this
 project pins:
 
 ```bash
-sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+sdkmanager "platforms;android-36" "build-tools;36.0.0" "platform-tools"
 ```
 
 Point Gradle at the SDK, either by exporting the path:
@@ -44,7 +44,7 @@ JDK satisfies the JDK 17 requirement.
 
 ### Option C: nix (optional)
 
-`android/flake.nix` pins the whole toolchain (JDK 17, platform 35, build-tools
+`android/flake.nix` pins the whole toolchain (JDK 17, platform 36, build-tools
 35.0.0, platform-tools). It is a convenience for machines that already run nix,
 including non-NixOS ones; it is not a requirement for building this project and
 nothing in CI uses it.
@@ -147,17 +147,17 @@ Plugin versions live in `android/build.gradle.kts`, library versions in
 
 | Dependency | Version | Purpose |
 |------------|---------|---------|
-| Kotlin | 2.1.0 | Language |
-| Android Gradle Plugin | 8.7.3 | Build |
-| Gradle (wrapper) | 8.11 | Build |
-| Compose BOM | 2024.12.01 | UI framework |
+| Kotlin | 2.4.10 | Language |
+| Android Gradle Plugin | 8.13.2 | Build |
+| Gradle (wrapper) | 8.14.3 | Build |
+| Compose BOM | 2026.06.01 | UI framework |
 | Material3 | (from BOM) | Design system |
 | Glance | 1.1.1 | Widget framework |
-| OkHttp | 4.12.0 | HTTP client |
+| OkHttp | 5.4.0 | HTTP client |
 | DataStore | 1.1.1 | Preferences storage |
-| Lifecycle | 2.8.7 | ViewModel |
+| Lifecycle | 2.10.0 | ViewModel |
 | JUnit | 4.13.2 | Unit tests (test only) |
-| MockWebServer | 4.12.0 | HTTP tests (test only) |
+| MockWebServer | 5.4.0 | HTTP tests (test only) |
 
 ## Adding Dependencies
 
@@ -254,8 +254,8 @@ The Kotlin and Compose compiler plugin versions must match in
 `android/build.gradle.kts`:
 
 ```kotlin
-id("org.jetbrains.kotlin.android") version "2.1.0" apply false
-id("org.jetbrains.kotlin.plugin.compose") version "2.1.0" apply false
+id("org.jetbrains.kotlin.android") version "2.4.10" apply false
+id("org.jetbrains.kotlin.plugin.compose") version "2.4.10" apply false
 ```
 
 ## Debugging
