@@ -147,9 +147,9 @@ Plugin versions live in `android/build.gradle.kts`, library versions in
 
 | Dependency | Version | Purpose |
 |------------|---------|---------|
-| Kotlin | 2.4.10 | Language |
-| Android Gradle Plugin | 8.13.2 | Build |
-| Gradle (wrapper) | 8.14.3 | Build |
+| Kotlin | 2.4.10 (provided by AGP) | Language |
+| Android Gradle Plugin | 9.3.1 | Build |
+| Gradle (wrapper) | 9.7.1 | Build |
 | Compose BOM | 2026.06.01 | UI framework |
 | Material3 | (from BOM) | Design system |
 | Glance | 1.1.1 | Widget framework |
@@ -254,7 +254,6 @@ The Kotlin and Compose compiler plugin versions must match in
 `android/build.gradle.kts`:
 
 ```kotlin
-id("org.jetbrains.kotlin.android") version "2.4.10" apply false
 id("org.jetbrains.kotlin.plugin.compose") version "2.4.10" apply false
 ```
 

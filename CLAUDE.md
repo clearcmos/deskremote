@@ -389,29 +389,28 @@ Dated, with the reason. Add to this rather than rewriting it.
   it never gets to show the detail. `KeyboardType.Password` plus
   `autoCorrectEnabled = false` stops the IME offering or committing anything.
 
-### Known upgrade chains (blocked, not forgotten)
+### Toolchain
 
-Resolved 2026-08-22: AGP 8.13.2 on Gradle 8.14.3, compileSdk and targetSdk 36,
-Kotlin 2.4.10, activity 1.13.0, compose BOM 2026.06.01, lifecycle 2.10.0,
-OkHttp 5.4.0. Grouping dependabot by ecosystem is what made the Kotlin bump
-possible at all: all five plugin versions have to move in one commit.
+Current as of 2026-08-23: AGP 9.3.1 on Gradle 9.7.1, Kotlin 2.4.10, compileSdk
+and targetSdk 36, core-ktx 1.18.0, compose BOM 2026.06.01, lifecycle 2.10.0,
+OkHttp 5.4.0.
 
-What is still deliberately held back, with the exact blocker:
-
-- **AGP 9.x** removes the `org.jetbrains.kotlin.android` plugin entirely
-  ("no longer required for Kotlin support since AGP 9.0") and needs Gradle
-  9.5+. That is a build-script migration, not a version bump, so it wants its
-  own focused pass.
-- **The whole androidx and Compose front is now at the AGP 8.x ceiling.**
-  core-ktx 1.19+ and OkHttp 5.5+ want API 37; lifecycle 2.11+ and Compose 1.12
-  (compose-bom 2026.07.00 and later) want AGP 9.1+. Held at core-ktx 1.18.0,
-  lifecycle 2.10.0, compose-bom 2026.06.01, OkHttp 5.4.0. `.github/dependabot.yml`
-  carries a matching `ignore` block so these do not reopen as failing PRs every
-  month; deleting that block is the first step of the AGP 9 migration.
-- **nixpkgs pins the SDK platform.** The dev shell only had `android-36.1`
-  until `nix flake update nixpkgs` (2025-12-15 to 2026-08-22) brought in plain
-  `android-36`, which is what AGP resolves for `compileSdk = 36`. A future
-  compileSdk bump may need the same lock refresh before it can build locally.
+- **AGP 9 provides Kotlin itself.** `org.jetbrains.kotlin.android` is gone from
+  both build files; applying it now fails with "no longer required for Kotlin
+  support since AGP 9.0". The compose and serialization plugins stay, and
+  `kotlin { compilerOptions { jvmTarget } }` still works.
+- **The remaining upgrade gate is API 37, not AGP.** core-ktx 1.19+, Compose
+  1.12 (compose-bom 2026.07.00+), lifecycle 2.11+ and OkHttp 5.5+ all require
+  compiling against API 37. That platform is still preview: `sdkmanager` has no
+  `platforms;android-36` in its stable channel, so CI cannot install it even
+  though nixpkgs ships an `android-37.0`. Building a published release against a
+  preview API is not worth it. `.github/dependabot.yml` holds those four with
+  that reason; when 37 goes stable, delete the block and bump compileSdk.
+- **AGP 9 is more forgiving about platform naming.** It accepts nixpkgs'
+  `android-37.0` for `compileSdk = 37`, where AGP 8 refused `android-36.1` for
+  36. If a compileSdk bump ever fails locally with "SDK directory is not
+  writable" while installing a platform, that mismatch is the cause and
+  `nix flake update nixpkgs` in `android/` is usually the fix.
 
 ## Additional Documentation
 
