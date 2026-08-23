@@ -381,6 +381,14 @@ Dated, with the reason. Add to this rather than rewriting it.
   still resolved. That is why the check runs `pip --version` rather than testing
   the interpreter. Reproduced in a sandbox before and after the fix.
 
+- **2026-08-22 - the auth token field disables autocorrect.** Found by driving
+  the app on a real S25: the Samsung IME committed a suggestion into the token
+  field, storing the token plus one extra character. The app then failed in the
+  least helpful way possible, "Server not reachable", because a token mismatch
+  means the app cannot verify the signature on the server's own 401 either, so
+  it never gets to show the detail. `KeyboardType.Password` plus
+  `autoCorrectEnabled = false` stops the IME offering or committing anything.
+
 ### Known upgrade chains (blocked, not forgotten)
 
 Resolved 2026-08-22: AGP 8.13.2 on Gradle 8.14.3, compileSdk and targetSdk 36,
