@@ -263,12 +263,24 @@ author's setup and entirely optional. It never overwrites an existing token
 unless you pass a new one.
 
 **Supply your own equivalents for two endpoints**
-- `/bluetooth` runs a `bt-toggle` command on the server's PATH. That script is
-  not in this repo (it encodes "turn Bluetooth on and connect one specific pair
-  of headphones"). Write your own with that name, or drop the endpoint.
+- `/bluetooth` runs a `bt-toggle` command on the server's PATH. What it should
+  do is personal (which device to reconnect), so it is not shipped as-is.
 - `/screen-off` starts a `screen-off-toggle.service` systemd user unit, which is
-  KDE Plasma-specific (DND plus display off). Supply your own unit of that name,
-  or drop the endpoint.
+  desktop-specific (displays off, optionally Do Not Disturb).
+
+Working examples for both are in [`examples/`](examples/) - copy, edit one
+variable, install:
+
+```bash
+install -m755 examples/bt-toggle ~/.local/bin/bt-toggle
+```
+```bash
+install -m755 examples/screen-off-toggle.sh ~/.local/bin/screen-off-toggle && install -m644 examples/screen-off-toggle.service ~/.config/systemd/user/ && systemctl --user daemon-reload
+```
+
+`bt-toggle` takes the device MAC from `BT_TOGGLE_DEVICE` (or leave it empty to
+just toggle power). `screen-off-toggle.sh` picks a method automatically from
+loginctl, xset, swaymsg or hyprctl. Or drop either endpoint.
 
 Missing helpers do not crash the server or break the other endpoints. The
 affected endpoint answers `503` naming the command it could not find, and the

@@ -50,6 +50,9 @@ This repo owns the `deskremote` server end to end: the application code, the sys
 - `server/deskremote.service` - systemd user unit (canonical; deployed by `install.sh` with paths rewritten to the actual checkout location)
 - `server/install.sh` - idempotent installer: creates venv, installs deps, deploys and enables the user unit
 
+### Examples
+- `examples/bt-toggle`, `examples/screen-off-toggle.sh`, `examples/screen-off-toggle.service` - reference implementations of the two host helpers the server shells out to but does not ship. Shellchecked in CI.
+
 ### Contracts
 - `spec/hmac-vectors.json` - the signed-message format, asserted by both test suites
 - `spec/wire-payloads.json` - the response payload shapes, asserted by both test suites

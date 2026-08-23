@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+# Example implementation of the `bt-toggle` helper that POST /bluetooth runs.
+#
+# The server does not ship this: what "toggle Bluetooth" should do is personal
+# (which device to reconnect, whether to wait for it). Copy this somewhere on
+# the service's PATH, name it `bt-toggle`, make it executable, and edit DEVICE.
+#
+#   install -m755 examples/bt-toggle ~/.local/bin/bt-toggle
+#
+# Behaviour: powered on -> power off. Powered off -> power on, then connect
+# DEVICE if one is set. Exits non-zero on failure, which the server turns into
+# a 500 for that endpoint only.
+set -euo pipefail
+
+# MAC address of the device to reconnect, or empty to just toggle power.
+# Find yours with: bluetoothctl devices
+DEVICE="${BT_TOGGLE_DEVICE:-}"
+
+# Seconds to wait for the adapter and the connection.
+CONNECT_TIMEOUT="${BT_TOGGLE_TIMEOUT:-15}"
+
+if ! command -v bluetoothctl >/dev/null 2>&1; then
+    echo "bt-toggle: bluetoothctl not found (install bluez)" >&2
+    exit 1
+fi
+
+powered() {
+    bluetoothctl show 2>/dev/null | grep -q "Powered: yes"
+}
+
+if powered; then
+    echo "bt-toggle: powering off"
+    bluetoothctl power off >/dev/null
+    exit 0
+fi
+
+echo "bt-toggle: powering on"
+bluetoothctl power on >/dev/null
+
+# The adapter is not immediately ready after power on.
+for _ in $(seq 1 "$CONNECT_TIMEOUT"); do
+    powered && break
+    sleep 1
+done
+
+if [[ -z "$DEVICE" ]]; then
+    echo "bt-toggle: powered on (no device configured)"
+    exit 0
+fi
+
+echo "bt-toggle: connecting $DEVICE"
+for _ in $(seq 1 "$CONNECT_TIMEOUT"); do
+    if bluetoothctl info "$DEVICE" 2>/dev/null | grep -q "Connected: yes"; then
+        echo "bt-toggle: connected"
+        exit 0
+    fi
+    bluetoothctl connect "$DEVICE" >/dev/null 2>&1 || true
+    sleep 1
+done
+
+echo "bt-toggle: powered on but could not connect $DEVICE" >&2
+exit 1

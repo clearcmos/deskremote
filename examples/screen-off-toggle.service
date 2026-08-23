@@ -1,0 +1,11 @@
+# Example unit for the screen-off action. POST /screen-off runs
+#   systemctl --user start screen-off-toggle.service
+# so the unit must have exactly this name. Install to
+# ~/.config/systemd/user/screen-off-toggle.service and run
+#   systemctl --user daemon-reload
+[Unit]
+Description=Turn the displays off (and optionally enable Do Not Disturb)
+
+[Service]
+Type=oneshot
+ExecStart=%h/.local/bin/screen-off-toggle
