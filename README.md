@@ -124,7 +124,7 @@ Download the APK from
 [Releases](https://github.com/clearcmos/deskremote/releases/latest) and open it
 on the phone. Android will ask you to allow installs from an unknown source.
 Each release ships a `.sha256` next to the APK; verify it with
-`sha256sum -c deskremote-v1.0.0.apk.sha256`.
+`sha256sum -c deskremote-v1.0.1.apk.sha256` (match the version you downloaded).
 
 Or build it yourself:
 
