@@ -19,13 +19,13 @@ val keystoreProperties = Properties().apply {
 
 android {
     namespace = "com.clearcmos.deskremote"
-    compileSdk = 37
-    buildToolsVersion = "37.0.0"
+    compileSdk = 36
+    buildToolsVersion = "36.0.0"
 
     defaultConfig {
         applicationId = "com.clearcmos.deskremote"
         minSdk = 26
-        targetSdk = 37
+        targetSdk = 36
         // Overridable from the release workflow (-PversionCode / -PversionName)
         // so a tagged release stamps its own version without editing this file.
         versionCode = (project.findProperty("versionCode") as String?)?.toInt() ?: 1
@@ -92,18 +92,18 @@ kotlin {
 
 dependencies {
     // AndroidX Core
-    implementation("androidx.core:core-ktx:1.19.0")
+    implementation("androidx.core:core-ktx:1.18.0")
     implementation("androidx.appcompat:appcompat:1.8.0")
     implementation("androidx.activity:activity-ktx:1.13.0")
 
     // Jetpack Compose
-    implementation(platform("androidx.compose:compose-bom:2026.08.00"))
+    implementation(platform("androidx.compose:compose-bom:2026.06.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.activity:activity-compose:1.13.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.11.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
     debugImplementation("androidx.compose.ui:ui-tooling")
 
     // Jetpack Glance for widgets
@@ -111,8 +111,8 @@ dependencies {
     implementation("androidx.glance:glance-material3:1.1.1")
 
     // Lifecycle
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.11.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.11.0")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.10.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0")
 
     // Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0")
@@ -124,7 +124,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
 
     // OkHttp for HTTP requests
-    implementation("com.squareup.okhttp3:okhttp:5.5.0")
+    implementation("com.squareup.okhttp3:okhttp:5.4.0")
 
     // WorkManager for background sync
     implementation("androidx.work:work-runtime-ktx:2.10.0")
@@ -132,5 +132,5 @@ dependencies {
     // Unit tests (JVM, no device or emulator)
     testImplementation(kotlin("test"))
     testImplementation("junit:junit:4.13.2")
-    testImplementation("com.squareup.okhttp3:mockwebserver:5.5.0")
+    testImplementation("com.squareup.okhttp3:mockwebserver:5.4.0")
 }

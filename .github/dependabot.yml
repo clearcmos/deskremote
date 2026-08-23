@@ -17,6 +17,22 @@ updates:
     schedule:
       interval: monthly
     open-pull-requests-limit: 3
+    #
+    # Everything here needs the app to compile against API 37, which is still a
+    # preview SDK: it is not in sdkmanager's stable channel, so CI cannot even
+    # install it, and shipping a release built against a preview API is not
+    # something to do on purpose. Delete this block when API 37 goes stable and
+    # bump compileSdk with it. This is not an AGP constraint; the project is on
+    # AGP 9 already.
+    ignore:
+      - dependency-name: "androidx.core:core-ktx"
+        versions: [">=1.19.0"]
+      - dependency-name: "androidx.compose:compose-bom"
+        versions: [">=2026.07.00"] # pulls Compose 1.12
+      - dependency-name: "androidx.lifecycle:*"
+        versions: [">=2.11.0"]
+      - dependency-name: "com.squareup.okhttp3:*"
+        versions: [">=5.5.0"]
     groups:
       kotlin:
         patterns: ["org.jetbrains.kotlin*"]
