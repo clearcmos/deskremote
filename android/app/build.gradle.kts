@@ -127,7 +127,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:5.4.0")
 
     // WorkManager for background sync
-    implementation("androidx.work:work-runtime-ktx:2.10.0")
+    implementation("androidx.work:work-runtime-ktx:2.12.0")
 
     // Unit tests (JVM, no device or emulator)
     testImplementation(kotlin("test"))
