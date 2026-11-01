@@ -115,13 +115,13 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.10.0")
 
     // Coroutines
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.12.0")
 
     // DataStore for settings persistence
     implementation("androidx.datastore:datastore-preferences:1.1.1")
 
     // Kotlin Serialization for JSON
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.12.0")
 
     // OkHttp for HTTP requests
     implementation("com.squareup.okhttp3:okhttp:5.4.0")
