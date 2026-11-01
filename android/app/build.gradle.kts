@@ -118,7 +118,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.11.0")
 
     // DataStore for settings persistence
-    implementation("androidx.datastore:datastore-preferences:1.1.1")
+    implementation("androidx.datastore:datastore-preferences:1.3.0")
 
     // Kotlin Serialization for JSON
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.11.0")
@@ -127,7 +127,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:5.4.0")
 
     // WorkManager for background sync
-    implementation("androidx.work:work-runtime-ktx:2.10.0")
+    implementation("androidx.work:work-runtime-ktx:2.12.0")
 
     // Unit tests (JVM, no device or emulator)
     testImplementation(kotlin("test"))
